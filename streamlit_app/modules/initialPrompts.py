@@ -266,7 +266,7 @@ Question 3:
 Which startups incorporated in the last 5 years have over 5 awards?
 ```
 MATCH (s:Startup)
-WHERE date(s.incorporation) >= date() - duration({years: 5}) AND size(s.awards) > 5
+WHERE date(s.incorporation) >= date() - duration(years: 5) AND size(s.awards) > 5
 RETURN s.title, s.incorporation, size(s.awards) AS numAwards
 ```
 
@@ -289,7 +289,7 @@ RETURN s.title, s.description
 Question 6:
 Which are the most similar startups to <startupname>?
 ```
-MATCH (s1:Startup {title: '<name>'})-[r:SIMILAR]-(s2:Startup)
+MATCH (s1:Startup {{title: '<name>'}})-[r:SIMILAR]-(s2:Startup)
 RETURN s2.title, s2.incorporation, s2.headquarters, s2.sectors, s2.social, s2.awards, s2.subtitle, s2.description, s2.url
 ```
 
