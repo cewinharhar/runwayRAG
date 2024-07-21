@@ -169,8 +169,7 @@ def scrape_and_store_info(json_path, sleep=3, outPath = None):
     
     return df
 
-      
-    
+
 if __name__ == "__main__":
 # Example usage
     branch_urls_dict = {
