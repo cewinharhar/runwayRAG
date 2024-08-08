@@ -287,10 +287,10 @@ RETURN s.title, s.description
 ```
 
 Question 6:
-Which are the most similar startups to <startupname>?
+Which are the most similar startups to <startupname>? For this question return all available information from the s1 and s2 startups.
 ```
 MATCH (s1:Startup {{title: '<name>'}})-[r:SIMILAR]-(s2:Startup)
-RETURN s2.title, s2.incorporation, s2.headquarters, s2.sectors, s2.social, s2.awards, s2.subtitle, s2.description, s2.url
+RETURN s1, r, s2
 ```
 
 Schema: 

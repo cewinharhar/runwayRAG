@@ -5,6 +5,7 @@ requests
 beautifulsoup4
 langchain
 langchain-community
+langchain-openai
 python-dotenv
 tiktoken
 neo4j
