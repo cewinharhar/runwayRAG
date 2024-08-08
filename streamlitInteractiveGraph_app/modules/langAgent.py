@@ -13,7 +13,7 @@ from langchain.vectorstores.neo4j_vector import Neo4jVector
 
 from langchain.chains import GraphCypherQAChain
 from langchain_community.graphs import Neo4jGraph
- 
+
 import os
 
 from modules.initialPrompts import SYSTEM_MESSAGE, CYPHER_GENERATION_TEMPLATE
