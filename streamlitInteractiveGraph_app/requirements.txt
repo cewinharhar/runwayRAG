@@ -1,0 +1,10 @@
+streamlit
+streamlit-agraph
+openai
+requests
+beautifulsoup4
+langchain
+langchain-community
+python-dotenv
+tiktoken
+neo4j

@@ -1,0 +1,26 @@
+.App {
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  input {
+    padding: 10px;
+    margin-right: 10px;
+    width: 300px;
+  }
+  
+  button {
+    padding: 10px;
+  }
+  
+  .response {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .labels text {
+    fill: #333;
+    font-family: Arial, sans-serif;
+  }
+  
