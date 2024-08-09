@@ -2,40 +2,25 @@ import csv
 import ast
 from neo4j import GraphDatabase
 import pandas as pd
+import numpy as np
 import time
 
-def has_similar_sectors(sectors1, sectors2, threshold_percentage=0.5):
-    # Convert both sector lists to sets for easier comparison
-    set1 = set(sectors1)
-    set2 = set(sectors2)
-    
-    # Find the intersection of both sets
-    intersection = set1.intersection(set2)
-    
-    # Determine the smaller set size
-    #min_size = min(len(set1), len(set2))
-    decidor = max(len(set1), len(set2))
-    
-    # Calculate the overlap percentage
-    overlap_percentage = len(intersection) / decidor
-    
-    # Return whether the overlap percentage meets the threshold
-    return overlap_percentage >= threshold_percentage
+from streamlitInteractiveGraph_app.modules.similarity_functions import similarity_embedding_cosine, similarity_sector, similarity_jaccard
 
 def compute_similarity_score(startup1, startup2, weights):
     # Compute individual similarity scores
-    text_similarity = cosine_similarity([startup1['description_embedding']], [startup2['description_embedding']])[0][0]
-    sector_similarity = has_similar_sectors(startup1['sectors'], startup2['sectors'])
+    text_similarity = similarity_embedding_cosine([startup1['description_embedding']], [startup2['description_embedding']])[0][0]
+    sector_similarity = similarity_sector(startup1['sectors'], startup2['sectors'])
     location_similarity = 1 if startup1['headquarters'] == startup2['headquarters'] else 0
-    incorporation_similarity = 1 - abs(startup1['incorporation'] - startup2['incorporation']) / max_year_difference
-    social_links_similarity = jaccard_similarity(startup1['social_links'], startup2['social_links'])
-    awards_similarity = jaccard_similarity(startup1['awards'], startup2['awards'])
+    # incorporation_similarity = 1 - abs(startup1['incorporation'] - startup2['incorporation']) / max_year_difference
+    social_links_similarity = similarity_jaccard(startup1['social_links'], startup2['social_links'])
+    awards_similarity = similarity_jaccard(startup1['awards'], startup2['awards'])
     
     # Combine them using weights
     similarity_score = (weights['text'] * text_similarity +
                         weights['sector'] * sector_similarity +
                         weights['location'] * location_similarity +
-                        weights['incorporation'] * incorporation_similarity +
+                        # weights['incorporation'] * incorporation_similarity +
                         weights['social_links'] * social_links_similarity +
                         weights['awards'] * awards_similarity)
     
@@ -46,20 +31,18 @@ weights = {
     'text': 0.3,
     'sector': 0.2,
     'location': 0.1,
-    'incorporation': 0.1,
+    # 'incorporation': 0.1,
     'social_links': 0.2,
     'awards': 0.1
 }
 
 
-def create_knowledge_graph(csv_path, driver, threshold_percentage = 0.5):
+def create_knowledge_graph(csv_path, driver, threshold_percentage = 0.5): #TODO restructure function make more professional
     def get_data_from_csv(csv_path):
         with open(csv_path, mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=',')
             data = [row for row in reader]
         return data
-
-
     
     @staticmethod
     def _dynamic_tx(tx, query, **kwargs):
@@ -70,7 +53,7 @@ def create_knowledge_graph(csv_path, driver, threshold_percentage = 0.5):
 
         return [re for re in res]
 
-    def create_graph(data, driver):
+    def create_graph(data, driver): 
         with driver.session() as session:
             dataLen = len(data)
             for i, row in enumerate(data):
@@ -115,7 +98,7 @@ def create_knowledge_graph(csv_path, driver, threshold_percentage = 0.5):
                     if not sectors2:
                         continue
 
-                    if has_similar_sectors(sectors1, sectors2, threshold_percentage):
+                    if similarity_sector(sectors1, sectors2, threshold_percentage):
                         query = (
                             """
                             MATCH (a:Startup {title: $title1}), (b:Startup {title: $title2})

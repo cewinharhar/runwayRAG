@@ -1,4 +1,0 @@
-langchain
-neo4j
-flask
-flask_cors

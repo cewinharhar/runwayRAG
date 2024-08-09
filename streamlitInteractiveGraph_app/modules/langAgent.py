@@ -45,6 +45,26 @@ class consumerAgentDAO:
         #--- TOOLS
         youtube = YouTubeSearchTool()
 
+
+
+        #------------------------------------------------------
+        # CYPHER QUERY SEARCH   
+        #------------------------------------------------------
+        self.cypher_generation_prompt = PromptTemplate.from_template(CYPHER_GENERATION_TEMPLATE)
+
+        self.cypher_chain = GraphCypherQAChain.from_llm(
+            llm,
+            graph=graph,
+            cypher_prompt=self.cypher_generation_prompt,
+            # output_parser=SimpleJsonOutputParser(),
+            verbose=False,
+            return_intermediate_steps=True,
+            return_direct=True
+        )  
+
+        #------------------------------------------------------
+        # Vector search   #TODO not done yet, code below should be used
+        #------------------------------------------------------
         #neo4jvector = Neo4jVector.from_existing_index(
         #    embedding_provider,                              # (1)
         #    url=os.getenv("NEO4J_DT_AURA_URI"),
@@ -65,19 +85,9 @@ class consumerAgentDAO:
         #)
 
         #------------------------------------------------------
-        # CYPHER QUERY SEARCH   
+        # lead generator   #TODO not done yet
         #------------------------------------------------------
-        self.cypher_generation_prompt = PromptTemplate.from_template(CYPHER_GENERATION_TEMPLATE)
 
-        self.cypher_chain = GraphCypherQAChain.from_llm(
-            llm,
-            graph=graph,
-            cypher_prompt=self.cypher_generation_prompt,
-            # output_parser=SimpleJsonOutputParser(),
-            verbose=False,
-            return_intermediate_steps=True,
-            return_direct=True
-        )  
 
 
         self.tools = [

@@ -72,6 +72,7 @@ def main():
                     st.error("Failed to generate response.")    
 
     with col2:
+        # AN alternative to this additional package could be pyvis: https://archive.is/7zygl
         print("col 1")
         # st.header("Graph Visualization")
         if 'graph_data' in locals() and graph_data:
